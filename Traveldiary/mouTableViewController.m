@@ -28,6 +28,10 @@
     UIBarButtonItem * addButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
     
+ 
+    
+    
+    
     // Do any additional setup after loading the view.
     mouDataManager = [[CoreDataManager alloc]initWithModel:@"Traveldiary" dbFileName:@"oudiary.sqlite" dbFilePathURL:nil sortKey:@"mouinfo" entityName:@"Mou"];
 

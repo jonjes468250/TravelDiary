@@ -32,6 +32,7 @@
     self.navigationItem.rightBarButtonItem = plus;
     diaryManager = [[CoreDataManager alloc]initWithModel:@"Traveldiary" dbFileName:@"diary.sqlite" dbFilePathURL:nil sortKey:@"title" entityName:@"Diary"];
 }
+
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
 //    if (cell ==  nil) {
@@ -82,10 +83,20 @@
 
     return cell;
 }
-//-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-//    cell = [tableView dequeueReusableCellWithIdentifier:@"CELL" forIndexPath:indexPath];
-//       // judgment SelectRow
-//    Diary * diarycell = (Diary* )[diaryManager getByIndex:indexPath.row];
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    cell = [tableView dequeueReusableCellWithIdentifier:@"CELL" forIndexPath:indexPath];
+       // judgment SelectRow
+    Diary * diarycell = (Diary* )[diaryManager getByIndex:indexPath.row];
+    NSString * title = diarycell.title;
+    NSString* message = diarycell.text;
+    
+    UIAlertController * alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction * ok = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [self.tableView reloadData];
+    }];
+    [alert addAction:ok];
+    [self presentViewController:alert animated:true
+                     completion:nil];
 //    
 //    // codedatamodel -change
 //    [self editInfoWithDefault:diarycell withCompletion:^(bool success, Diary *result) {
@@ -98,7 +109,7 @@
 //            [self.tableView reloadData];
 //        }];
 //    }];
-//}
+}
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
@@ -140,46 +151,47 @@
     [self showViewController:diarycell sender:nil];
     
 }
-//typedef void (^EditInfoCompletion)(bool success, Diary * result);
-//
-//-(void) editInfoWithDefault:(Diary*)defaultInfo
-//             withCompletion:(EditInfoCompletion)completion
-//{
-//    // add new alertcontroller
-//    UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"修改日記" message:nil preferredStyle:UIAlertControllerStyleAlert];
-//    
-//    // add mouinfo field
-//    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-//
-//        textField.text = defaultInfo.title;
-//    }];
-//    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-//        textField.sizeToFit;
-//        textField.text = defaultInfo.text;
-//    }];
-//    // add new ok Btn
-//    UIAlertAction * ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        
-//        Diary * diaryInfo = defaultInfo;
-//        if (diaryInfo == nil) {
-//            //create new item necessary
-//            diaryInfo = (Diary* ) [diaryManager createItem];
-//            
-//        }
-//        diaryInfo.title = alert.textFields[0].text;
-//        diaryInfo.text = alert.textFields[1].text;
-//
-//        completion(true,diaryInfo);
-//    }];
-//    [alert addAction:ok];
-//    //add cancel button
-//    UIAlertAction * cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        completion(false,nil);
-//    }];
-//    
-//    [alert addAction:cancel];
-//    [self presentViewController:alert animated:true completion:nil];
-//    
-//}
+typedef void (^EditInfoCompletion)(bool success, Diary * result);
+
+-(void) editInfoWithDefault:(Diary*)defaultInfo
+             withCompletion:(EditInfoCompletion)completion
+{
+    // add new alertcontroller
+    UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"修改日記" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    
+    // add mouinfo field
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+
+        textField.text = defaultInfo.title;
+    }];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.sizeToFit;
+        textField.text = defaultInfo.text;
+    }];
+    // add new ok Btn
+    UIAlertAction * ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        Diary * diaryInfo = defaultInfo;
+        if (diaryInfo == nil) {
+            //create new item necessary
+            diaryInfo = (Diary* ) [diaryManager createItem];
+            
+        }
+        diaryInfo.title = alert.textFields[0].text;
+        diaryInfo.text = alert.textFields[1].text;
+
+        completion(true,diaryInfo);
+    }];
+    [alert addAction:ok];
+    //add cancel button
+    UIAlertAction * cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        completion(false,nil);
+    }];
+    
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:true completion:nil];
+    
+}
+
 
 @end

@@ -28,6 +28,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
+    UIBarButtonItem * back = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(BackMainvc:)];
+    self.navigationItem.leftBarButtonItem = back;
+    
     // Do any additional setup after loading the view.
     diaryManager = [[CoreDataManager alloc]initWithModel:@"Traveldiary" dbFileName:@"diary.sqlite" dbFilePathURL:nil sortKey:@"title" entityName:@"Diary"];
     
@@ -83,7 +86,12 @@
         
         UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"儲存中"message:@"回憶增加中" preferredStyle:UIAlertControllerStyleAlert];
         
-        UIAlertAction * ok =[UIAlertAction actionWithTitle:@"明白了"style:UIAlertActionStyleCancel handler:nil];
+        UIAlertAction * ok =[UIAlertAction actionWithTitle:@"明白了"style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [self.navigationController popViewControllerAnimated:YES];
+
+            // 會有等待畫面 有空放個動畫
+            
+        }];
         
         [alert addAction:ok];
         [self presentViewController:alert animated:true completion:nil];
@@ -91,7 +99,12 @@
         self.titleTextField.text = @"";
         self.diaryTextView.text = @"";
     }
+     
 }
-
+// 返回
+- (void)BackMainvc: (UIBarButtonItem *)barItem{
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 @end
