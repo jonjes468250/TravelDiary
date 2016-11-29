@@ -28,12 +28,12 @@
     UIBarButtonItem * addButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
     
- 
-    
-    
-    
     // Do any additional setup after loading the view.
-    mouDataManager = [[CoreDataManager alloc]initWithModel:@"Traveldiary" dbFileName:@"oudiary.sqlite" dbFilePathURL:nil sortKey:@"mouinfo" entityName:@"Mou"];
+    mouDataManager = [[CoreDataManager alloc]initWithModel:@"Traveldiary" dbFileName:@"moudiary.sqlite" dbFilePathURL:nil sortKey:@"mouinfo" entityName:@"Mou"];
+       NSArray * results = [mouDataManager searchFor:@"12" atField:@"mouinfo"];
+    for (Mou * tmp in results) {
+        NSLog(@"found %@",tmp.mouinfo);
+    }
 
     
 }
@@ -87,20 +87,20 @@
 
         cellColor = NO;
     }
-    // judgment SelectRow
-    Mou * mou = (Mou* )[mouDataManager getByIndex:indexPath.row];
-    
-    // codedatamodel -change
-    [self editInfoWithDefault:mou withCompletion:^(bool success, Mou *result) {
-        //data no change
-        if (success == false) {
-            return ;
-        }
-        //if data change
-        [mouDataManager saveContextWithCompletion:^(BOOL success) {
-            [self.tableView reloadData];
-        }];
-    }];
+//    // judgment SelectRow
+//    Mou * mou = (Mou* )[mouDataManager getByIndex:indexPath.row];
+//    
+//    // codedatamodel -change
+//    [self editInfoWithDefault:mou withCompletion:^(bool success, Mou *result) {
+//        //data no change
+//        if (success == false) {
+//            return ;
+//        }
+//        //if data change
+//        [mouDataManager saveContextWithCompletion:^(BOOL success) {
+//            [self.tableView reloadData];
+//        }];
+//    }];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -148,6 +148,7 @@ typedef void (^EditInfoCompletion)(bool success, Mou * result);
           
         }
         mouInfo.mouinfo = alert.textFields[0].text;
+        
         completion(true,mouInfo);
     }];
     [alert addAction:ok];
